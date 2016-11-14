@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Social
 
 class DetailViewController: UIViewController {
 
@@ -18,6 +19,8 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         
         title = selectedImage
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
 
         if let imageToLoad = selectedImage {
             imageView.image = UIImage(named: imageToLoad)
@@ -37,6 +40,19 @@ class DetailViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func shareTapped() {
+        let activityVC = UIActivityViewController(activityItems: [imageView.image!], applicationActivities: [])
+        activityVC.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(activityVC, animated: true)
+        
+        if let fbVc = SLComposeViewController(forServiceType: SLServiceTypeFacebook) {
+            fbVc.setInitialText("Storm pics!")
+            fbVc.add(imageView.image!)
+            fbVc.add(URL(string: "http://www.photolib.noaa.gov/nssl"))
+            present(fbVc, animated: true)
+        }
     }
     
 
